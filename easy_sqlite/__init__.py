@@ -1,4 +1,4 @@
-import sqlite3, sys
+import sqlite3, sys, os, webbrowser
 from bs4 import BeautifulSoup as soup
 
 class sql_table(object):
@@ -48,8 +48,10 @@ class sql_table(object):
             fcmd = "SELECT * FROM %s WHERE %s" % (self.name,sb)
             self.db.c.execute(fcmd)
             return self.db.c.fetchall()
-    def to_html(l,names):
+    def to_html(self):
         """Generates HTML table for table data"""
+        names = self.get_column_names()
+        l = self.get_raw()
         tree = soup("<table><tbody></tbody></table>", "html.parser")
         body = tree.find("tbody")
         # create th tags for all the column names
@@ -71,6 +73,25 @@ class sql_table(object):
                 r.append(ttag)
             body.append(r)
         return tree
+    def display_html(self, use_stylesheet=True):
+        path_to_html_cache = "cache/generated_table.html"
+        base = soup("<html><head></head><body></body></html>", "html.parser")
+        base.find("body").append(self.to_html())
+        title = base.new_tag("title")
+        title.append(self.db.filename + " | " + self.name)
+        base.find("head").append(title)
+        if use_stylesheet:
+            r = open("src/html/stylesheets/sqlite_db_table.css",'r')
+            x = base.new_tag("style")
+            x.append(r.read())
+            r.close()
+            base.find("head").append(x)
+        if os.path.exists(path_to_html_cache) == False:
+            open(path_to_html_cache,'a')
+        w = open(path_to_html_cache, 'w')
+        w.write(str(base))
+        w.close()
+        webbrowser.open_new_tab("file://" + os.getcwd().replace("\\","/") + "/" + path_to_html_cache)
 
 class database(object):
     datatype_conversion = {
@@ -81,9 +102,15 @@ class database(object):
     def __init__(self,filename):
         self.conn = sqlite3.connect(filename)
         self.c = self.conn.cursor()
+        self.filename = filename
         tables = self.get_tables()
         for name in tables:
-            self.__setattr__(name,sql_table(name,self))
+            try:
+                self.__setattr__(name,sql_table(name,self))
+            except:
+                print("Encountered Error where indexing all the database's tables. Perhaps your database has an issue with its names?")
+                print("(Error encountered):")
+                print(str(sys.exc_info()[1]))
         pass
     def create_table(self,name,sample,if_not_exists=True):
         """

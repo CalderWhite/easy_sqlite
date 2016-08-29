@@ -1,0 +1,17 @@
+table, th, tr, td{
+	border: 1px solid black;
+	text-align: center;
+	
+}
+table{
+	width: 100%;
+}
+th {
+	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	font-size: 16px;
+}
+td{
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	font-weight: 2;
+}
