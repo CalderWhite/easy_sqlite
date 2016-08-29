@@ -7,7 +7,7 @@ setup(
   author = 'Calder White',
   author_email = 'calderwhite1@gmail.com',
   url = 'https://github.com/CalderWhite/easy_sqlite', # use the URL to the github repo
-  download_url = 'https://github.com/peterldowns/mypackage/tarball/0.1', # I'll explain this in a second
+  download_url = 'https://github.com/CalderWhite/easy_sqlite/archive/master.zip', # I'll explain this in a second
   keywords = [], # arbitrary keywords
   classifiers = [],
 )
