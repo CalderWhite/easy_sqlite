@@ -104,13 +104,14 @@ class database(object):
         self.c = self.conn.cursor()
         self.filename = filename
         tables = self.get_tables()
-        for name in tables:
-            try:
-                self.__setattr__(name,sql_table(name,self))
-            except:
-                print("Encountered Error where indexing all the database's tables. Perhaps your database has an issue with its names?")
-                print("(Error encountered):")
-                print(str(sys.exc_info()[1]))
+        if tables != None:
+            for name in tables:
+                try:
+                    self.__setattr__(name,sql_table(name,self))
+                except:
+                    print("Encountered Error where indexing all the database's tables. Perhaps your database has an issue with its names?")
+                    print("(Error encountered):")
+                    print(str(sys.exc_info()[1]))
         pass
     def create_table(self,name,sample,if_not_exists=True):
         """
@@ -131,7 +132,7 @@ class database(object):
         ifnot = ""
         if if_not_exists:
             ifnot = "IF NOT EXISTS "
-        c.execute("CREATE TABLE %s%s(%s)" % (ifnot,name,strb))
+        self.c.execute("CREATE TABLE %s%s(%s)" % (ifnot,name,strb))
         self.__setattr__(name,sql_table(name,self))
         pass
     def close_all(self):
