@@ -143,4 +143,4 @@ class database(object):
     def get_tables(self):
         """Returns all of the database's tables"""
         self.c.execute("select name from sqlite_master where type = 'table'")
-        return self.c.fetchone()
+        return self.c.fetchall()
